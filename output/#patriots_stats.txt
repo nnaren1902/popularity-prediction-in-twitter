@@ -1,0 +1,1 @@
+tweets/hour :  499	average # followers : 3641
