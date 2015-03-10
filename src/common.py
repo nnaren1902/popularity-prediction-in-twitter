@@ -11,9 +11,9 @@ class CaseInsensitiveDict(dict):
     
 month_dict = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12};
 
-def logAvgTweets(outputFile , average , averageFollowers):
-    with open(outputFile,'w') as outputFileObject:
-        to_write = "tweets/hour :  "+ str(average)+"\taverage # followers : "+str(averageFollowers);
+def logAvgTweets(outputFile , average , averageFollowers,startTime, endTime,mode='a'):
+    with open(outputFile,mode) as outputFileObject:
+        to_write ="startTime :"+str(startTime)+" || endTime :"+str(endTime)+ " || tweets/hour :"+ str(average)+" || average # followers :"+str(averageFollowers)+"\n";
         outputFileObject.write(to_write);  
         print ("done"); 
 
