@@ -8,10 +8,17 @@ for inputFile in config.input_file_list:
         line = inputFileObject.readline();
         tweet = json.loads(line);
         startTime = common.getDateTime(tweet["tweet"]["created_at"]);
+        
+        overall_start_time = startTime;
     #for each file, read the tweets 
     with open(inputFile,'r') as inputFileObject:
+        total_count = 0;
+        total_user_followers = 0;
+        total_retweet = 0;
         count = 0;
-        user_followers = 0;
+        
+    
+        
         ##start from the first tweets time
     
         for line in inputFileObject:
@@ -21,25 +28,38 @@ for inputFile in config.input_file_list:
             if (tweet != 0) and (type(tweet) is dict) :
                 timeStamp = common.getDateTime(tweet["tweet"]["created_at"]);
                 curTime = timeStamp;
+                overall_end_time = timeStamp;
+                
+                total_count = total_count +1;
+                total_user_followers = total_user_followers + int(tweet['tweet']['user']['followers_count']);
+                total_retweet = total_retweet + int(tweet['metrics']['citations']['total']);
                 
                 if(curTime <= (startTime+config.delta) ):
-                        user_followers = user_followers + int(tweet['tweet']['user']['followers_count']);
                         count = count+1;
+                        
                      
                 else:   
                                           
-                    common.logAvgTweets(config.output_file_list[inputFile] , count, user_followers/count ,startTime, startTime+config.delta); 
+                    common.logBinTweets(config.output_file_list1[inputFile] , count ,startTime, startTime+config.delta); 
+                    
                     startTime = startTime + config.delta; 
                     while  (curTime > (startTime+config.delta)) :
-                           common.logAvgTweets(config.output_file_list[inputFile] , 0, 0, startTime, startTime+config.delta);
+                           common.logBinTweets(config.output_file_list1[inputFile] , 0, startTime, startTime+config.delta);
                            startTime = startTime+config.delta;
                            
                     
                     count =1;
-                    user_followers = int(tweet['tweet']['user']['followers_count']);
+                    
         
         
-    common.logAvgTweets(config.output_file_list[inputFile] , count , user_followers/count,startTime, startTime+config.delta);
+    common.logBinTweets(config.output_file_list1[inputFile] , count ,startTime, startTime+config.delta);
+    
+    #log the averages
+    timeDelta = overall_end_time - overall_start_time;
+    
+    timeDelta_hours = timeDelta.total_seconds()/3600;
+    
+    common.logAvgTweets(config.output_file_list2[inputFile] , total_count/timeDelta_hours , total_user_followers/total_count , total_retweet/total_count);
        
         
     

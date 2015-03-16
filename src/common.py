@@ -11,13 +11,19 @@ class CaseInsensitiveDict(dict):
     
 month_dict = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'Sep':9,'Oct':10,'Nov':11,'Dec':12};
 
-def logAvgTweets(outputFile , average , averageFollowers,startTime, endTime,mode='a'):
+def logBinTweets(outputFile , average ,startTime, endTime,mode='a'):
     with open(outputFile,mode) as outputFileObject:
-        to_write ="startTime :"+str(startTime)+" || endTime :"+str(endTime)+ " || tweets/hour :"+ str(average)+" || average # followers :"+str(averageFollowers)+"\n";
+        to_write ="startTime :"+str(startTime)+" || endTime :"+str(endTime)+ " || tweets/hour :"+ str(average)+"\n";
         outputFileObject.write(to_write);  
         print ("done"); 
 
 
+def logAvgTweets(outputFile, avg_tweets_per_hour , avg_followers , avg_retweet):
+    with open(outputFile,'w') as outputFileObject:
+        to_write = "average tweets/hour :"+str(avg_tweets_per_hour)+"|| average follower count : "+str(avg_followers)+"|| average retweet count : "+str(avg_retweet)+"\n";
+        outputFileObject.write(to_write);
+        print ("done logging averages");
+        
 def getDateTime(strTime):
     list = strTime.split(" ");
     time_str = list[3].split(":");
