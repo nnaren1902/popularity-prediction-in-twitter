@@ -71,7 +71,7 @@ for inputFile in config.input_file_list:
             if (tweet != 0) and (type(tweet) is dict):
                 #timeStamp will be used to generate UNIX time
                 #dayHr is a number between 0-23 capturing hour of day (re-)tweet was published
-                [timeStamp, dayHr] = common.getDateTime(tweet["tweet"]["created_at"])
+                [timeStamp, dayHr] = common.getDateTime1(tweet["tweet"]["created_at"])
                 curTime = int(time.mktime(timeStamp.timetuple()))
                 #tweetHr is the UNIX hour in which (re-)tweet was published
                 tweetHr = curTime / 3600
@@ -133,8 +133,8 @@ print 'Performing Sweeping Linear Regression'
 startHr = 394796
 endHr = 395367
 
-outputFH1 = open('log/part2_sweep_stats_OLS.txt','w')
-outputFH2 = open('log/part2_sweep_stats_GLS.txt','w')
+outputFH1 = open('../log/part2_sweep_stats_OLS.txt','w')
+outputFH2 = open('../log/part2_sweep_stats_GLS.txt','w')
 
 
 for i in range(startHr,endHr):

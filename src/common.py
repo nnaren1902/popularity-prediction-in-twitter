@@ -14,7 +14,7 @@ month_dict = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,'May':5,'Jun':6,'Jul':7,'Aug':8,'S
 def logBinTweets(outputFile , average ,startTime, endTime,mode='a'):
     with open(outputFile,mode) as outputFileObject:
         to_write ="startTime :"+str(startTime)+" || endTime :"+str(endTime)+ " || tweets/hour :"+ str(average)+"\n";
-        outputFileObject.write(to_write);  
+        outputFileObject.write(to_write);
         print ("done"); 
 
 
@@ -24,10 +24,15 @@ def logAvgTweets(outputFile, avg_tweets_per_hour , avg_followers , avg_retweet):
         outputFileObject.write(to_write);
         print ("done logging averages");
         
+def getDateTime1(strTime):
+    list = strTime.split(" ")
+    time_str = list[3].split(":")
+    dateObject = datetime.datetime(int(list[5]),month_dict[list[1]] , int(list[2]), int(time_str[0]), int(time_str[1]), int(time_str[2]))
+    return dateObject
+
 def getDateTime(strTime):
     list = strTime.split(" ");
     time_str = list[3].split(":");
-   
+
     dateObject = datetime.datetime(int(list[5]),month_dict[list[1]] , int(list[2]), int(time_str[0]), int(time_str[1]), int(time_str[2]) );
-    return dateObject;
-    
+    return [dateObject,int(time_str[0])];

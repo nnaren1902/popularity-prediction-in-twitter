@@ -1,4 +1,4 @@
-import common as common 
+import common as common
 import config as config
 import time
 import json
@@ -36,9 +36,12 @@ def writeLog(fh,results):
     #conf_int(0.05) - 95% confidence intervals for each parameter (list of lists)
     #Predicted values: results.predict()
     for j in range(len(results.params)):
-        fh.write(str(results.params[j])+'\t'+str(results.bse[j])+'\t'+str(results.tvalues[j])+'\t'+str(results.pvalues[j])+'\t'+str(results.conf_int(0.05)[j][0])+'\t'+str(results.conf_int(0.05)[j][1])+'\n')
+        fh.write(str(results.params[j]) + '\t' + str(results.bse[j]) + '\t' + str(results.tvalues[j]) + '\t' + str(
+            results.pvalues[j]) + '\t' + str(results.conf_int(0.05)[j][0]) + '\t' + str(
+            results.conf_int(0.05)[j][1]) + '\n')
 
-    fh.write(str(results.f_pvalue)+'\t'+str(results.fvalue)+'\t'+str((results.mse_resid)/nTag)+'\t'+str(results.rsquared)+'\n')
+    fh.write(str(results.f_pvalue) + '\t' + str(results.fvalue) + '\t' + str((results.mse_resid) / nTag) + '\t' + str(
+        results.rsquared) + '\n')
     fh.write('\n')
 
 #Number of hashtags to sweep
@@ -58,6 +61,7 @@ nTag = len(config.input_file_list)
 #   menMax - max of number of mentions in tweets with the hashtag during the hour
 #   TagsSum - sum of the number of other hashtags in the same tweet during the hour
 #   TagsMax - max of the number of other hashtags in the same tweet during the hour
+
 statList = [[[]] for x in range(nTag)]
 
 for inputFile in config.input_file_list:
@@ -93,7 +97,7 @@ for inputFile in config.input_file_list:
                     curDayHr = dayHr
 
                     #Update count depending on whether this is a tweet or re-tweet
-                    [tweetCount,retweetCount] = resetCount(tweet)
+                    [tweetCount, retweetCount] = resetCount(tweet)
 
                     followerSum = int(tweet['original_author']['followers'])
                     followerMax = int(tweet['original_author']['followers'])
@@ -104,15 +108,15 @@ for inputFile in config.input_file_list:
                     menMax = int(len(tweet['tweet']['entities']['user_mentions']))
 
                     TagsSum = int(len(tweet['tweet']['entities']['hashtags']) - 1)
-                    TagsMax = int(len(tweet['tweet']['entities']['hashtags'])-1)
+                    TagsMax = int(len(tweet['tweet']['entities']['hashtags']) - 1)
                 #######If we find more (re-)tweets in this hour#######
                 elif tweetHr == curTweetHr:
 
                     #Update count depending on whether this is a tweet or re-tweet
-                    [tweetCount,retweetCount] = updateCount(tweet,tweetCount,retweetCount)
+                    [tweetCount, retweetCount] = updateCount(tweet, tweetCount, retweetCount)
 
                     followerSum = followerSum + int(tweet['original_author']['followers'])
-                    followerMax = max(followerMax,int(tweet['original_author']['followers']))
+                    followerMax = max(followerMax, int(tweet['original_author']['followers']))
 
                     impCount = max(impCount, int(tweet['metrics']['impressions']))
 
@@ -120,15 +124,17 @@ for inputFile in config.input_file_list:
                     menMax = max(menMax, int(len(tweet['tweet']['entities']['user_mentions'])))
 
                     TagsSum = TagsSum + int(len(tweet['tweet']['entities']['hashtags']) - 1)
-                    TagsMax = max(TagsMax, int(len(tweet['tweet']['entities']['hashtags'])-1))
+                    TagsMax = max(TagsMax, int(len(tweet['tweet']['entities']['hashtags']) - 1))
                 #######If it's time to move onto the next hour#######
                 else:
-                    statList[config.input_file_order[inputFile]].append([curTweetHr, tweetCount, retweetCount, followerSum, followerMax, curDayHr, impCount, menSum, menMax, TagsSum, TagsMax])
+                    statList[config.input_file_order[inputFile]].append(
+                        [curTweetHr, tweetCount, retweetCount, followerSum, followerMax, curDayHr, impCount, menSum,
+                         menMax, TagsSum, TagsMax])
 
                     curTweetHr = tweetHr
                     curDayHr = dayHr
 
-                    [tweetCount,retweetCount] = resetCount(tweet)
+                    [tweetCount, retweetCount] = resetCount(tweet)
 
                     followerSum = int(tweet['original_author']['followers'])
                     followerMax = int(tweet['original_author']['followers'])
@@ -139,9 +145,11 @@ for inputFile in config.input_file_list:
                     menMax = int(len(tweet['tweet']['entities']['user_mentions']))
 
                     TagsSum = int(len(tweet['tweet']['entities']['hashtags']) - 1)
-                    TagsMax = int(len(tweet['tweet']['entities']['hashtags'])-1)
-                    
-    statList[config.input_file_order[inputFile]].append([curTweetHr, tweetCount, retweetCount, followerSum, followerMax, curDayHr, impCount, menSum, menMax, TagsSum, TagsMax])
+                    TagsMax = int(len(tweet['tweet']['entities']['hashtags']) - 1)
+
+    statList[config.input_file_order[inputFile]].append(
+        [curTweetHr, tweetCount, retweetCount, followerSum, followerMax, curDayHr, impCount, menSum, menMax, TagsSum,
+         TagsMax])
     statList[config.input_file_order[inputFile]].remove([])
 
 
@@ -164,9 +172,10 @@ print 'Performing Day-to-Day Linear Regression'
 #Perform regression on a hour-to-hour rolling window over the range common to data from all hashtag JSON dumps
 startHr = 394796
 endHr = 395367
+#PST to UTC
 
-outputFH1 = open('log/part3_sweep_stats_OLS.txt','w')
-outputFH2 = open('log/part3_sweep_stats_GLS.txt','w')
+outputFH1 = open('../log/part3_sweep_stats_OLS.txt', 'w')
+outputFH2 = open('../log/part3_sweep_stats_GLS.txt', 'w')
 
 for i in range(startHr,endHr-46):
     print 'Processing Hr ', str(i+1-startHr), ' of ', str((endHr-46-startHr))
@@ -203,7 +212,6 @@ for i in range(startHr,endHr-46):
     if isPD(residVar):
         model = sm.GLS(y, X, residVar)
         results = model.fit()
-
     writeLog(outputFH2,results)
 
 
